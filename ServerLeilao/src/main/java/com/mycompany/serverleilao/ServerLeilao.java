@@ -1,8 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.mycompany.serverleilao;
+
+import com.mycompany.view.MainFrame;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -11,6 +10,13 @@ package com.mycompany.serverleilao;
 public class ServerLeilao {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        swingTest();
+    }
+    
+    public static void swingTest(){
+        SwingUtilities.invokeLater(() -> {
+            MainFrame mainFrame = new MainFrame();
+            mainFrame.setVisible(true); // Torna o JFrame visível
+        });
     }
 }
