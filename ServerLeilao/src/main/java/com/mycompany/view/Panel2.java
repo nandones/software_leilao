@@ -66,7 +66,7 @@ public class Panel2 extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-        mainFrame.switchPanel(new Panel1()); // Alterna para o Panel1
+        mainFrame.switchPanel(new ConnectionsConfigPanel()); // Alterna para o Panel1
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

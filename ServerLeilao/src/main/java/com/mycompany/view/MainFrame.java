@@ -18,7 +18,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        Panel1 panel1 = new Panel1(); // Instancia o Panel1
+        ConnectionsConfigPanel panel1 = new ConnectionsConfigPanel(); // Instancia o Panel1
         switchPanel(panel1);
     }
 

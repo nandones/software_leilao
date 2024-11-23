@@ -1,6 +1,5 @@
-package com.mycompany.clientleilao;
+package com.mycompany.serverleilao;
 
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -15,11 +14,8 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -29,13 +25,17 @@ import javax.crypto.spec.SecretKeySpec;
  * @author nandones A class whose purpose is to group together all
  * cryptography-related methods
  */
-public class CryptoUtils {
+public class ServerCryptoUtils {
+    
+    //String signatureBase64 = Base64.getEncoder().encodeToString(signature);
+    //byte[] signatureByte = Base64.getDecoder().decode(signatureBase64);
+    //we ll need these later.    
 
     /*
             __   ____  ____ 
            / _\ (  __)/ ___)
-          /    \ ) _) \___ \
-          \_/\_/(____)(____/
+          /    \ ) _) \___ \      //font:
+          \_/\_/(____)(____/      //https://patorjk.com/software/taag/#p=display&v=3&f=Graceful 
      */
     /**
      * Method to generate a 128-bit AES key
@@ -44,10 +44,15 @@ public class CryptoUtils {
      * encryption and decryption.
      * @throws Exception
      */
-    public static SecretKey generateAESKey() throws Exception {
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES"); // Makes a instance of KeyGenerator to the AES algorithm
-        keyGen.init(128); // init the KeyGenerator with the key size as 128 bits
-        return keyGen.generateKey();
+    public static SecretKey generateAESKey(){
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES"); // Makes a instance of KeyGenerator to the AES algorithm
+            keyGen.init(128); // init the KeyGenerator with the key size as 128 bits
+            return keyGen.generateKey();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**
@@ -146,17 +151,14 @@ public class CryptoUtils {
      * Generates an RSA key pair (public and private keys).
      *
      * @return A KeyPair object containing the public and private RSA keys.
+     * @throws NoSuchAlgorithmException If the RSA algorithm is not available in
+     * the environment.
      *
      */
-    public static KeyPair generateRSAKeyPair(){
-        try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA"); // Initializes the RSA key pair generator
-            keyGen.initialize(2048); // Sets the key size to 2048 bits (secure);
-            return keyGen.generateKeyPair(); // Generates and returns the key pair
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(CryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public static KeyPair generateRSAKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA"); // Initializes the RSA key pair generator
+        keyGen.initialize(2048); // Sets the key size to 2048 bits (secure);
+        return keyGen.generateKeyPair(); // Generates and returns the key pair
     }
 
     /**
@@ -171,16 +173,11 @@ public class CryptoUtils {
      * plaintext message. The result is returned as a Base64 encoded string to
      * ensure the encrypted data can be safely transmitted or stored.
      */
-    public static String encryptWithRSA(String plainText, PublicKey publicKey){
-        try {
-            Cipher cipher = Cipher.getInstance("RSA"); // Initializes the Cipher with the RSA algorithm
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey); // Sets the Cipher for encryption mode using the public key
-            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes()); // Encrypts the data and stores it in encryptedBytes
-            return Base64.getEncoder().encodeToString(encryptedBytes); // Encodes the encrypted data in Base64 and returns as a string
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
-            Logger.getLogger(CryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public static String encryptWithRSA(String plainText, PublicKey publicKey) throws Exception {
+        Cipher cipher = Cipher.getInstance("RSA"); // Initializes the Cipher with the RSA algorithm
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey); // Sets the Cipher for encryption mode using the public key
+        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes()); // Encrypts the data and stores it in encryptedBytes
+        return Base64.getEncoder().encodeToString(encryptedBytes); // Encodes the encrypted data in Base64 and returns as a string
     }
 
     /**
@@ -189,18 +186,18 @@ public class CryptoUtils {
      * @param cipherText The Base64 encoded encrypted message to be decrypted.
      * @param privateKey The RSA private key used to decrypt the message.
      * @return The decrypted plaintext message as a string.
+     * @throws Exception If an error occurs during decryption.
+     *
+     * This method uses the RSA algorithm to decrypt the provided ciphertext
+     * message, which is expected to be Base64 encoded. The decrypted message is
+     * returned as a string.
      */
-    public static String decryptWithRSA(String cipherText, PrivateKey privateKey){
-        try {
-            byte[] encryptedBytes = Base64.getDecoder().decode(cipherText); // Decodes the Base64 string to bytes
-            Cipher cipher = Cipher.getInstance("RSA"); // Initializes the Cipher with the RSA algorithm
-            cipher.init(Cipher.DECRYPT_MODE, privateKey); // Sets the Cipher for decryption mode using the private key
-            byte[] decryptedBytes = cipher.doFinal(encryptedBytes); // Decrypts the data and stores it in decryptedBytes
-            return new String(decryptedBytes); // Converts the decrypted bytes to a string and returns it
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
-            Logger.getLogger(CryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public static String decryptWithRSA(String cipherText, PrivateKey privateKey) throws Exception {
+        byte[] encryptedBytes = Base64.getDecoder().decode(cipherText); // Decodes the Base64 string to bytes
+        Cipher cipher = Cipher.getInstance("RSA"); // Initializes the Cipher with the RSA algorithm
+        cipher.init(Cipher.DECRYPT_MODE, privateKey); // Sets the Cipher for decryption mode using the private key
+        byte[] decryptedBytes = cipher.doFinal(encryptedBytes); // Decrypts the data and stores it in decryptedBytes
+        return new String(decryptedBytes); // Converts the decrypted bytes to a string and returns it
     }
 
     /**
@@ -280,15 +277,19 @@ public class CryptoUtils {
      * @param publicKeyString The Base64-encoded string representing the public
      * key.
      * @return The reconstructed PublicKey object.
+     * @throws Exception If an error occurs during the reconstruction process,
+     * such as invalid input or unsupported algorithm.
      */
-    public static PublicKey convertBase64StringToPublicKey (String publicKeyString){
+    public static PublicKey convertBase64StringToPublicKey (String publicKeyString) {
         try {
             byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyString); // Decodes the Base64 string to a byte array
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes); // Wraps the byte array in an X509EncodedKeySpec
             KeyFactory keyFactory = KeyFactory.getInstance("RSA"); // Gets a KeyFactory instance for RSA
             return keyFactory.generatePublic(keySpec); // Generates and returns the PublicKey object
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            Logger.getLogger(CryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -299,6 +300,8 @@ public class CryptoUtils {
      * @param privateKeyString The Base64-encoded string representing the private
      * key.
      * @return The reconstructed PrivateKey object.
+     * @throws Exception If an error occurs during the reconstruction process,
+     * such as invalid input or unsupported algorithm.
      */
     public static PrivateKey convertBase64StringToPrivateKey (String privateKeyString){
         try {
@@ -306,8 +309,10 @@ public class CryptoUtils {
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes); // Wraps the byte array in an X509EncodedKeySpec
             KeyFactory keyFactory = KeyFactory.getInstance("RSA"); // Gets a KeyFactory instance for RSA
             return keyFactory.generatePrivate(keySpec); // Generates and returns the PrivateKey object
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            Logger.getLogger(CryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
