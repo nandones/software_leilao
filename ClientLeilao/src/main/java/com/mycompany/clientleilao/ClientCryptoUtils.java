@@ -1,5 +1,6 @@
 package com.mycompany.clientleilao;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -115,11 +116,16 @@ public class ClientCryptoUtils {
      * @return (String): The encrypted message encoded in Base64 format.
      * @throws Exception
      */
-    public static String encryptWithAES(String plainText, SecretKey key, IvParameterSpec iv) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv); // Initializes the Cipher for encryption mode with the key and IV
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes()); // Encrypts the plaintext into bytes and stores in encryptedBytes
-        return Base64.getEncoder().encodeToString(encryptedBytes); // Encodes the encrypted bytes in Base64 and returns as a string
+    public static String encryptWithAES(String plainText, SecretKey key, IvParameterSpec iv){
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv); // Initializes the Cipher for encryption mode with the key and IV
+            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes()); // Encrypts the plaintext into bytes and stores in encryptedBytes
+            return Base64.getEncoder().encodeToString(encryptedBytes); // Encodes the encrypted bytes in Base64 and returns as a string
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
+            Logger.getLogger(ClientCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**
@@ -133,11 +139,16 @@ public class ClientCryptoUtils {
      * @return (String): The decrypted plaintext message.
      * @throws Exception
      */
-    public static String decryptWithAES(String encryptedText, SecretKey key, IvParameterSpec iv) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
-        cipher.init(Cipher.DECRYPT_MODE, key, iv); // Initializes the Cipher for decryption mode with the key and IV
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText)); // Decodes the Base64 text and decrypts it
-        return new String(decryptedBytes); // Converts the decrypted bytes into a string and returns it
+    public static String decryptWithAES(String encryptedText, SecretKey key, IvParameterSpec iv){
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
+            cipher.init(Cipher.DECRYPT_MODE, key, iv); // Initializes the Cipher for decryption mode with the key and IV
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText)); // Decodes the Base64 text and decrypts it
+            return new String(decryptedBytes); // Converts the decrypted bytes into a string and returns it
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
+            Logger.getLogger(ClientCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /*

@@ -1,5 +1,7 @@
 package com.mycompany.serverleilao;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -14,8 +16,11 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -94,15 +99,20 @@ public class ServerCryptoUtils {
      * IvParameterSpec object.
      * @throws NoSuchAlgorithmException
      */
-    public static IvParameterSpec generateIvFromAESKey(SecretKey key) throws NoSuchAlgorithmException {
-        byte[] keyBytes = key.getEncoded(); // Gets the key bytes
-        MessageDigest md = MessageDigest.getInstance("SHA-256"); // Uses SHA-256 to ensure 32 bytes of output
-        byte[] iv = md.digest(keyBytes); // Generates a hash of the key
-
-        byte[] iv16 = new byte[16]; // Creates a 16-byte array for the IV
-        System.arraycopy(iv, 0, iv16, 0, 16); // Copies the first 16 bytes of the hash into the IV
-
-        return new IvParameterSpec(iv16); // Returns the IV as an IvParameterSpec object
+    public static IvParameterSpec generateIvFromAESKey(SecretKey key){
+        try {
+            byte[] keyBytes = key.getEncoded(); // Gets the key bytes
+            MessageDigest md = MessageDigest.getInstance("SHA-256"); // Uses SHA-256 to ensure 32 bytes of output
+            byte[] iv = md.digest(keyBytes); // Generates a hash of the key
+            
+            byte[] iv16 = new byte[16]; // Creates a 16-byte array for the IV
+            System.arraycopy(iv, 0, iv16, 0, 16); // Copies the first 16 bytes of the hash into the IV
+            
+            return new IvParameterSpec(iv16); // Returns the IV as an IvParameterSpec object
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**
@@ -116,11 +126,16 @@ public class ServerCryptoUtils {
      * @return (String): The encrypted message encoded in Base64 format.
      * @throws Exception
      */
-    public static String encryptWithAES(String plainText, SecretKey key, IvParameterSpec iv) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv); // Initializes the Cipher for encryption mode with the key and IV
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes()); // Encrypts the plaintext into bytes and stores in encryptedBytes
-        return Base64.getEncoder().encodeToString(encryptedBytes); // Encodes the encrypted bytes in Base64 and returns as a string
+    public static String encryptWithAES(String plainText, SecretKey key, IvParameterSpec iv){
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv); // Initializes the Cipher for encryption mode with the key and IV
+            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes()); // Encrypts the plaintext into bytes and stores in encryptedBytes
+            return Base64.getEncoder().encodeToString(encryptedBytes); // Encodes the encrypted bytes in Base64 and returns as a string
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**
@@ -134,11 +149,16 @@ public class ServerCryptoUtils {
      * @return (String): The decrypted plaintext message.
      * @throws Exception
      */
-    public static String decryptWithAES(String encryptedText, SecretKey key, IvParameterSpec iv) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
-        cipher.init(Cipher.DECRYPT_MODE, key, iv); // Initializes the Cipher for decryption mode with the key and IV
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText)); // Decodes the Base64 text and decrypts it
-        return new String(decryptedBytes); // Converts the decrypted bytes into a string and returns it
+    public static String decryptWithAES(String encryptedText, SecretKey key, IvParameterSpec iv){
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Creates a Cipher instance using AES/CBC/PKCS5Padding mode
+            cipher.init(Cipher.DECRYPT_MODE, key, iv); // Initializes the Cipher for decryption mode with the key and IV
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText)); // Decodes the Base64 text and decrypts it
+            return new String(decryptedBytes); // Converts the decrypted bytes into a string and returns it
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
+            Logger.getLogger(ServerCryptoUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /*

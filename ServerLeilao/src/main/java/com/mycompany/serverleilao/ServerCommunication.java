@@ -5,6 +5,7 @@
 package com.mycompany.serverleilao;
 
 import com.mycompany.certificateauthority.CAregisters;
+import com.mycompany.view.AuctionPanel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,14 +27,15 @@ import org.json.JSONObject;
 public class ServerCommunication {
 
     public static ServerSocket serverSocket;
-    public static final SecretKey SECRET_KEY = ServerCryptoUtils.generateAESKey();
-    public static final String SECRET_KEY_BASE_64 = ServerCryptoUtils.convertAESKeyToBase64(SECRET_KEY);
     public static CAregisters ca = new CAregisters();
 
     public static void main(String[] args) {
 
     }
-
+    /**
+     * this method requires to already have the multicast and handshake server adresses and ports values.
+     * @param serverSocket 
+     */
     public static void receiveAndProcessJoinRequest(ServerSocket serverSocket) {
         try {
             System.out.println("Waiting for client connection...");
@@ -71,13 +73,13 @@ public class ServerCommunication {
             if (authentication) {
                 text = "user authenticated.";
 
-                signatureBytes = ServerCryptoUtils.signMessage(text, ServerLeilao.SERVER_PRIVATE_KEY_BYTES);
+                signatureBytes = ServerCryptoUtils.signMessage(text, ServerAuction.SERVER_PRIVATE_KEY_BYTES);
                 signatureBase64 = Base64.getEncoder().encodeToString(signatureBytes);
                 //Secret Key encoded with client public key.
-                String encodedSecretKey = ServerCryptoUtils.encryptWithRSA(SECRET_KEY_BASE_64, clientPublicKey);
+                String encodedSecretKey = ServerCryptoUtils.encryptWithRSA(ServerAuction.SECRET_KEY_BASE_64, clientPublicKey);
                 JSONObject response = new JSONObject();
-                response.put("adress", "230.0.0.1");//String
-                response.put("port", 12346);//int
+                response.put("adress", ServerAuction.multicastAddress);//String
+                response.put("port", ServerAuction.multicastPort);//int
                 response.put("secretKey", encodedSecretKey);//String in base64, encoded with client public key.
                 response.put("text", text);
                 response.put("signature", signatureBase64);
@@ -87,7 +89,7 @@ public class ServerCommunication {
             }
             // Close the streams and socket
             System.out.println("");
-            System.out.println("secret key: /n"+ SECRET_KEY_BASE_64);
+            System.out.println("secret key: /n"+ ServerAuction.SECRET_KEY_BASE_64);
             in.close();
             out.close();
             clientSocket.close();
@@ -96,4 +98,5 @@ public class ServerCommunication {
             e.printStackTrace();
         }
     }
+    
 }

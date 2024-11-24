@@ -5,6 +5,7 @@
 package com.mycompany.view;
 
 import com.mycompany.serverleilao.ServerCommunication;
+import com.mycompany.serverleilao.ServerAuction;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -38,7 +39,7 @@ public class ConnectionsConfigPanel extends javax.swing.JPanel {
 
         jButton1 = new javax.swing.JButton();
         labelTitle = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        buttonCreateMulticast = new javax.swing.JButton();
         labelHandshakeServerAddress = new javax.swing.JLabel();
         labelHanshekeServerPort = new javax.swing.JLabel();
         labelMulticastAdress = new javax.swing.JLabel();
@@ -53,10 +54,10 @@ public class ConnectionsConfigPanel extends javax.swing.JPanel {
 
         labelTitle.setText("ABRIR SALA LEILÃO:");
 
-        jButton2.setText("turn server on");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonCreateMulticast.setText("turn server on");
+        buttonCreateMulticast.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                buttonCreateMulticastActionPerformed(evt);
             }
         });
 
@@ -115,7 +116,7 @@ public class ConnectionsConfigPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 286, Short.MAX_VALUE)
-                                .addComponent(jButton2))
+                                .addComponent(buttonCreateMulticast))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(labelHanshekeServerPort)
@@ -154,7 +155,7 @@ public class ConnectionsConfigPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(labelConfigRules, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addComponent(buttonCreateMulticast)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -167,32 +168,31 @@ public class ConnectionsConfigPanel extends javax.swing.JPanel {
         }
     }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void buttonCreateMulticastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCreateMulticastActionPerformed
         int serverSocketInt = Integer.parseInt(textFieldServerPort.getText());
-
+        ServerAuction.multicastAddress = textFieldMulticastAdress.getText();
+        ServerAuction.multicastPort = Integer.parseInt(textFieldServerPort.getText());
         // Configuring the server socket in a separate thread
         Thread serverThread = new Thread(() -> {
             try {
                 ServerCommunication.serverSocket = new ServerSocket(serverSocketInt);
                 while(true){
-                ServerCommunication.receiveAndProcessJoinRequest(ServerCommunication.serverSocket);
+                    ServerCommunication.receiveAndProcessJoinRequest(ServerCommunication.serverSocket);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServerCommunication.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-
         // Switching to the next panel in another thread
         Thread panelSwitchThread = new Thread(() -> {
             MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-            mainFrame.switchPanel(new Panel2());
+            mainFrame.switchPanel(new AuctionPanel());
         });
-
         // Starting both threads
         serverThread.start();
         panelSwitchThread.start();
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_buttonCreateMulticastActionPerformed
 
     private void textFieldServerPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldServerPortActionPerformed
         // TODO add your handling code here:
@@ -208,8 +208,8 @@ public class ConnectionsConfigPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonCreateMulticast;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel labelConfigRules;
     private javax.swing.JLabel labelDynamicServerAddress;
     private javax.swing.JLabel labelHandshakeServerAddress;

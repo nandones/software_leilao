@@ -18,7 +18,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        requestToJoinMulticastPanel panel1 = new requestToJoinMulticastPanel(); // Instancia o Panel1
+        RequestToJoinMulticastPanel panel1 = new RequestToJoinMulticastPanel(); // Instancia o Panel1
         switchPanel(panel1);
     }
 

@@ -93,7 +93,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="labelTitle">
       <Properties>
-        <Property name="text" type="java.lang.String" value="!JAVA AUCTIONS?"/>
+        <Property name="text" type="java.lang.String" value="JAVA AUCTIONS!"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="buttonJoinMulticastRoom">

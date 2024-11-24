@@ -7,12 +7,12 @@ import javax.swing.SwingUtilities;
  *
  * @author nandones
  */
-public class requestToJoinMulticastPanel extends javax.swing.JPanel {
+public class RequestToJoinMulticastPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form Panel1
      */
-    public requestToJoinMulticastPanel() {
+    public RequestToJoinMulticastPanel() {
         initComponents();
     }
 
@@ -37,7 +37,7 @@ public class requestToJoinMulticastPanel extends javax.swing.JPanel {
 
         jButton1.setText("switch panel");
 
-        labelTitle.setText("!JAVA AUCTIONS?");
+        labelTitle.setText("JAVA AUCTIONS!");
 
         buttonJoinMulticastRoom.setText("join auction");
         buttonJoinMulticastRoom.addActionListener(new java.awt.event.ActionListener() {
@@ -125,7 +125,7 @@ public class requestToJoinMulticastPanel extends javax.swing.JPanel {
             labelErrorDynamic.setText("server not found!");
         } else {
             MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-            mainFrame.switchPanel(new Panel2());
+            mainFrame.switchPanel(new BidPanel());
         }
     }//GEN-LAST:event_buttonJoinMulticastRoomActionPerformed
 
