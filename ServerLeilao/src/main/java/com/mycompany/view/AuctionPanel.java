@@ -147,6 +147,34 @@ public class AuctionPanel extends javax.swing.JPanel {
 
         labelBidIncrement.setText("bid increment:");
 
+        textFieldName.setText("selfie com o professor robson");
+        textFieldName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldNameActionPerformed(evt);
+            }
+        });
+
+        textFieldDescription.setText("reliquia de valor inimaginaval, vendida baratinho aqui :D");
+        textFieldDescription.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldDescriptionActionPerformed(evt);
+            }
+        });
+
+        textFieldStartingPrice.setText("1000");
+        textFieldStartingPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldStartingPriceActionPerformed(evt);
+            }
+        });
+
+        textFieldBidIncrement.setText("150.5");
+        textFieldBidIncrement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldBidIncrementActionPerformed(evt);
+            }
+        });
+
         labelChronometer.setText("chronometer:");
 
         labelDynamicChronometer.setText("0.00");
@@ -155,6 +183,7 @@ public class AuctionPanel extends javax.swing.JPanel {
         textAreaBids.setRows(5);
         jScrollPane1.setViewportView(textAreaBids);
 
+        textFieldChronometer.setText("10");
         textFieldChronometer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldChronometerActionPerformed(evt);
@@ -391,6 +420,22 @@ public class AuctionPanel extends javax.swing.JPanel {
     private void textFieldChronometerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldChronometerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textFieldChronometerActionPerformed
+
+    private void textFieldNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textFieldNameActionPerformed
+
+    private void textFieldDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldDescriptionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textFieldDescriptionActionPerformed
+
+    private void textFieldStartingPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldStartingPriceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textFieldStartingPriceActionPerformed
+
+    private void textFieldBidIncrementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldBidIncrementActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textFieldBidIncrementActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -22,7 +22,7 @@ public class MainFrame extends javax.swing.JFrame {
         switchPanel(panel1);
     }
 
-    // Método no MainFrame.java
+
     public void switchPanel(JPanel newPanel) {
         mainPanel.removeAll(); // Remove todos os componentes do mainPanel
         mainPanel.setLayout(new BorderLayout()); // Define o layout como BorderLayout

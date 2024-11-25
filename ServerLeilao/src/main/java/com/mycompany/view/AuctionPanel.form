@@ -132,12 +132,36 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="textFieldName">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="selfie com o professor robson"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldNameActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textFieldDescription">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="reliquia de valor inimaginaval, vendida baratinho aqui :D"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldDescriptionActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textFieldStartingPrice">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="1000"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldStartingPriceActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textFieldBidIncrement">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="150.5"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldBidIncrementActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="labelChronometer">
       <Properties>
@@ -165,6 +189,9 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JTextField" name="textFieldChronometer">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="10"/>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textFieldChronometerActionPerformed"/>
       </Events>
